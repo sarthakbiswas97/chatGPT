@@ -80,7 +80,6 @@ export const userLogin = async (
       return res.status(403).send("Incorrect Password");
     }
 
-
     // removing the previous cookie first
     res.clearCookie(COOKIE_NAME, {
       httpOnly: true,
@@ -88,13 +87,12 @@ export const userLogin = async (
       signed: true,
       path: "/",
     });
-    
+
     // setting up the new cookie
 
     const token = createToken(user._id.toString(), user.email, "7d");
     const expires = new Date();
     expires.setDate(expires.getDate() + 7);
-
 
     res.cookie(COOKIE_NAME, token, {
       path: "/",
@@ -104,9 +102,39 @@ export const userLogin = async (
       signed: true,
     });
 
-    return res
-      .status(200)
-      .json({ message: "Successfully LoggedIn", email: user.email });
+    return res.status(200).json({
+      message: "Successfully LoggedIn",
+      name: user.name,
+      email: user.email,
+    });
+  } catch (error) {
+    res.status(404).json({ message: "ERROR", cause: error.message });
+  }
+};
+
+// user verification
+export const verifyUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  // User token check
+  try {
+    const user = await User.findById(res.locals.jwtData.id);
+    if (!user) {
+      return res.status(401).send("User Not Found Or Token invalid");
+    }
+    console.log(user._id.toString(), res.locals.jwtData.id);
+
+    if (user._id.toString() !== res.locals.jwtData.id) {
+      return res.status(401).send("Permission Denied");
+    }
+
+    return res.status(200).json({
+      message: "Successfully LoggedIn",
+      name: user.name,
+      email: user.email,
+    });
   } catch (error) {
     res.status(404).json({ message: "ERROR", cause: error.message });
   }
