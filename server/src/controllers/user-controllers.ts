@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import User from "../models/user.js";
+import User from "../models/User.js";
 import { hash, compare } from "bcrypt";
 import { createToken } from "../utils/token-manager.js";
 import { COOKIE_NAME } from "../utils/constants.js";
@@ -129,6 +129,40 @@ export const verifyUser = async (
     if (user._id.toString() !== res.locals.jwtData.id) {
       return res.status(401).send("Permission Denied");
     }
+
+    return res.status(200).json({
+      message: "Successfully LoggedIn",
+      name: user.name,
+      email: user.email,
+    });
+  } catch (error) {
+    res.status(404).json({ message: "ERROR", cause: error.message });
+  }
+};
+
+export const userLogout = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  // User token check
+  try {
+    const user = await User.findById(res.locals.jwtData.id);
+    if (!user) {
+      return res.status(401).send("User Not Found Or Token invalid");
+    }
+    console.log(user._id.toString(), res.locals.jwtData.id);
+
+    if (user._id.toString() !== res.locals.jwtData.id) {
+      return res.status(401).send("Permission Denied");
+    }
+
+    res.clearCookie(COOKIE_NAME, {
+      httpOnly: true,
+      domain: "localhost",
+      signed: true,
+      path: "/",
+    });
 
     return res.status(200).json({
       message: "Successfully LoggedIn",

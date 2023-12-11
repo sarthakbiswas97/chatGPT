@@ -1,9 +1,9 @@
 import React from "react";
-import { AppBar } from "@mui/material";
-import { Toolbar } from "@mui/material";
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
 import Logo from "./shared/Logo";
 import { useAuth } from "../context/AuthContext";
-import { NavigationLink } from "./shared/NavigationLink";
+import {NavigationLink} from "./shared/NavigationLink";
 
 export const Header = () => {
   const auth = useAuth();
@@ -11,36 +11,36 @@ export const Header = () => {
     <AppBar
       sx={{ bgcolor: "transparent", position: "static", boxShadow: "none" }}
     >
-      <Toolbar sx={{ display: "flex"  }}>
+      <Toolbar sx={{ display: "flex" }}>
         <Logo />
         <div>
           {auth?.isLoggedIn ? (
             <>
               <NavigationLink
-                bg="#00A67E"
+                bg="#00fffc"
                 to="/chat"
-                text="Go To Chats"
+                text="Go To Chat"
                 textColor="black"
               />
               <NavigationLink
-                bg="#00A67E"
-                textColor="black"
+                bg="#51538f"
+                textColor="white"
                 to="/"
-                text="Logout"
+                text="logout"
                 onClick={auth.logout}
               />
             </>
           ) : (
             <>
               <NavigationLink
-                bg="#00A67E"
+                bg="#00fffc"
                 to="/login"
                 text="Login"
-                textColor="#FFFFFF"
+                textColor="black"
               />
               <NavigationLink
-                bg="#00A67E"
-                textColor="#FFFFFF"
+                bg="#51538f"
+                textColor="white"
                 to="/signup"
                 text="Signup"
               />

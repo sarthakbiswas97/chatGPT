@@ -1,13 +1,10 @@
 import React from "react";
 import { TextField } from "@mui/material";
-
 type Props = {
   name: string;
   type: string;
-
   label: string;
 };
-
 export const CustomizedInput = (props: Props) => {
   return (
     <TextField
